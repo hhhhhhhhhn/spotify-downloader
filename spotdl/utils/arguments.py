@@ -768,6 +768,13 @@ def parse_misc_options(parser: _ArgumentGroup):
         ),
     )
 
+    #  Add force colors argument
+    parser.add_argument(
+        "--color",
+        choices=["always", "never", "auto"],
+        help="Display colors and other features like progress bars.",
+    )
+
 
 def parse_other_options(parser: _ArgumentGroup):
     """

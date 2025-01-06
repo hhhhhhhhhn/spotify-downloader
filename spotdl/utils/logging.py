@@ -3,9 +3,9 @@ Module for logging
 """
 
 import logging
-from typing import Optional
+from typing import Optional, Literal
 
-from rich import get_console
+from rich import get_console, reconfigure
 from rich.console import ConsoleRenderable
 from rich.logging import RichHandler
 from rich.markup import escape
@@ -159,13 +159,19 @@ class SpotdlHandler(RichHandler):
         return message_text
 
 
-def init_logging(log_level: str, log_format: Optional[str] = None):
+def init_logging(
+    log_level: str,
+    log_format: Optional[str] = None,
+    color: Optional[Literal["always", "never", "auto"]] = None,
+):
     """
     Initialize logging for spotdl.
 
     ### Arguments
-    - `console`: The console to use.
     - `log_level`: The log level to use.
+    - `log_format`: The format used by the logger.
+    - `color`: Either "always", "never", or "auto", tells the formatter to use
+       colors or not, or to auto-detect.
     """
 
     # Don't log too much
@@ -177,6 +183,12 @@ def init_logging(log_level: str, log_format: Optional[str] = None):
     logging.getLogger("bandcamp_api").setLevel(logging.WARNING)
     logging.getLogger("beautifulsoup4").setLevel(logging.WARNING)
     logging.getLogger("pytube").setLevel(logging.ERROR)
+
+    # Configure color
+    if color == "always":
+        reconfigure(force_terminal=True, force_interactive=True)
+    elif color == "never":
+        reconfigure(force_terminal=False, force_interactive=False)
 
     # Create console
     console = get_console()
